@@ -1,10 +1,10 @@
 import {useState} from "react";
 import {useRouter} from "next/router";
-import {login} from "@/utils/auth";
 import {getUserData} from "@/utils/graphql";
 import dynamic from "next/dynamic";
 import {useUser} from "@/contexts/UserContext";
 import {setCookie} from "cookies-next";
+import axios from "axios";
 
 const GlobalInit = dynamic(() => import('../../components/GlobalInit'), { ssr: false });
 
@@ -24,19 +24,26 @@ export default function Login() {
 
     const handleLogin = async (event) => {
         event.preventDefault();
-        const [token, status] = await login(credentials.identifier, credentials.password);
-        if (status !== 200) {
+
+        const basicAuth = btoa(`${credentials.identifier}:${credentials.password}`);
+
+        await axios.post('https://learn.reboot01.com/api/auth/signin', null, {
+            headers: {
+                Authorization: `Basic ${basicAuth}`,
+            },
+        }).then(async (response) => {
+            const token = response.data;
+            getUserData(token).then((data) => {
+                data.token = token;
+                dispatch({type: 'SET_USER', payload: data});
+                setCookie('token', token);
+            });
+
+            await router.push('/');
+        }).catch(() => {
             setError('Invalid credentials. Please try again.');
             return;
-        }
-
-        getUserData(token).then((data) => {
-            data.token = token;
-            dispatch({ type: 'SET_USER', payload: data });
-            setCookie('token', token);
         });
-
-        router.push('/');
     };
 
     return (

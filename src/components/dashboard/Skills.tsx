@@ -35,9 +35,6 @@ export default function Skills() {
         }
     }, [isMounted, user]);
 
-    console.log(skills)
-
-
     const options = {
         series: [{
             name: "Skills",
