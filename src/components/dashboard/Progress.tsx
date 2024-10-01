@@ -18,7 +18,7 @@ const Languages = {
 
 export default function Progress() {
     const { user, dispatch } = useUser();
-    const [ skills, setSkills ] = useState([]);
+    const [ skills, setSkills ] = useState([] as { skill: string, percentage: number }[]);
     const [ isMounted, setIsMounted ] = useState(false);
 
     useEffect(() => {
@@ -26,8 +26,8 @@ export default function Progress() {
             getSkills(user?.token as string).then((data) => {
                 setSkills(Object.entries(data)
                     .filter(([key, value]) => !(key in Languages))
-                    .map(([key, value]) => ({ skill: key, percentage: value }))
-                    .sort((a, b) => b.percentage - a.percentage));
+                    .map(([key, value]) => ({ skill: key, percentage: value } as { skill: string, percentage: number }))
+                    .sort((a, b) => b.percentage - a.percentage) as { skill: string, percentage: number }[]);
             });
 
             if (user) {
@@ -37,7 +37,7 @@ export default function Progress() {
             }
             setIsMounted(true);
         }
-    }, [isMounted, user]);
+    }, [dispatch, isMounted, user]);
 
     return (
         <>
@@ -47,7 +47,7 @@ export default function Progress() {
                 </span>
                 <div className="flex items-center gap-2.5">
                     <span className="text-3xl font-semibold text-gray-900">
-                       {formatBytes(user?.xp)}
+                       {formatBytes(user?.xp as number)}
                     </span>
                     <span className="badge badge-outline badge-success badge-sm">
                         LVL {user?.level}

@@ -9,6 +9,7 @@ interface User {
     login: string;
     level: number;
     token: string;
+    xp: number;
 }
 
 type UserState = User | null;

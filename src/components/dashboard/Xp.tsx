@@ -3,14 +3,15 @@ import {useUser} from "@/contexts/UserContext";
 import {useEffect, useState} from "react";
 import {getXPProgression} from "@/utils/graphql";
 import {formatBytes} from "@/utils/misc";
+import {ApexOptions} from "apexcharts";
 
 const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 export default function Xp() {
     const { user } = useUser();
     const [ isMounted, setIsMounted ] = useState(false);
-    const [ data, setData ] = useState([]);
-    const [ categories, setCategories ] = useState([]);
+    const [ data, setData ] = useState([] as number[]);
+    const [ categories, setCategories ] = useState([] as string[]);
 
     useEffect(() => {
         if (!isMounted) {
@@ -33,9 +34,9 @@ export default function Xp() {
                 // Get the last 12 months of data
                 const months = Object.keys(monthlyData);
 
-                const categories = months
+                const categories = months as string[];
 
-                const data = months.map(month => monthlyData[month]);
+                const data = months.map(month => monthlyData[month]) as number[];
 
                 setData(data);
                 setCategories(categories);
@@ -201,7 +202,7 @@ export default function Xp() {
     return (
         <div className="flex-grow items-center justify-center">
             <ApexChart
-                options={options}
+                options={options as ApexOptions}
                 series={options.series}
                 height={200}
             />

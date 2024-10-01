@@ -20,7 +20,7 @@ const Languages = {
 
 export default function Skills() {
     const { user } = useUser();
-    const [ skills, setSkills ] = useState([]);
+    const [ skills, setSkills ] = useState([] as { skill: string, percentage: number }[]);
     const [ isMounted, setIsMounted ] = useState(false);
 
     useEffect(() => {
@@ -28,7 +28,7 @@ export default function Skills() {
             getSkills(user?.token as string).then((data) => {
                 setSkills(Object.entries(data)
                     .filter(([key, value]) => key in Languages)
-                    .map(([key, value]) => ({ skill: Languages[key], percentage: value })));
+                    .map(([key, value]) => ({ skill: Languages[key], percentage: value })) as { skill: string, percentage: number }[]);
                     // .map(([key, value]) => ({ skill: key, percentage: value })));
             });
             setIsMounted(true);
