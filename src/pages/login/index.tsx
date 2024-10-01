@@ -33,7 +33,7 @@ export default function Login() {
             },
         }).then(async (response) => {
             const token = response.data;
-            getUserData(token).then((data) => {
+            await getUserData(token).then((data) => {
                 data.token = token;
                 dispatch({type: 'SET_USER', payload: data});
                 setCookie('token', token);
